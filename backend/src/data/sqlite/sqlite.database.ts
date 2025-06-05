@@ -1,0 +1,46 @@
+import { DataSource } from "typeorm";
+import { IDatabase } from "../interfaces/database.datasource";
+
+interface Options {
+    database: string,
+    entities: Function[]
+}
+
+export class SQLiteDatabase extends IDatabase {
+    public dataSource?: DataSource
+    private database: string
+    private entities: Function[]
+    private static instance: SQLiteDatabase
+
+    private constructor(options: Options) {
+        super()
+        const { database, entities } = options
+        this.database = database
+        this.entities = entities
+    }
+
+    public static getInstance(options: Options) {
+        if (this.instance == null) {
+            this.instance = new SQLiteDatabase(options)
+        }
+        return this.instance
+    }
+
+    public async connect(): Promise<boolean> {
+        try {
+            this.dataSource = new DataSource({
+                type: 'sqlite',
+                database: this.database,
+                entities: this.entities,
+                synchronize: true, //dev
+                logging: true, //dev
+            })
+            await this.dataSource.initialize()
+            return true
+        } catch (error) {
+            console.log('Error de conexion')
+            throw error
+        }
+    }
+
+}
