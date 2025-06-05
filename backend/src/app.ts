@@ -6,6 +6,7 @@ import { ColorModel } from "./data/models/color.model";
 import { VehiculoModel } from "./data/models/vehiculo.model";
 import { MarcaModel } from "./data/models/marca.model";
 import { ModeloModel } from "./data/models/modelo.model";
+import { MySQLDatabase } from "./data/mysql/mysql.database";
 
 (() => {
     main();
@@ -13,9 +14,17 @@ import { ModeloModel } from "./data/models/modelo.model";
 
 
 async function main() {
-    const database = SQLiteDatabase.getInstance({
-        database: envs.SQLITE_DB,
-        entities: [ColorModel, VehiculoModel, MarcaModel, ModeloModel]
+    const database = MySQLDatabase.getInstance({
+        database : envs.MYSQL_DB,
+        password: envs.MYSQL_PASSWORD ?? '',
+        port: envs.MYSQL_PORT,
+        username: envs.MYSQL_USER,
+        entities: [
+            ColorModel,
+            MarcaModel,
+            ModeloModel,
+            VehiculoModel
+        ]
     })
 
     await database.connect()
