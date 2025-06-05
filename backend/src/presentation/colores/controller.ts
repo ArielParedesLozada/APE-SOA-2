@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IRepository } from "../../data/repository.datasource";
-import { ColorModel } from "../../data/models/color.entity";
+import { ColorModel } from "../../data/models/color.model";
 
 export class ColorController {
     constructor(

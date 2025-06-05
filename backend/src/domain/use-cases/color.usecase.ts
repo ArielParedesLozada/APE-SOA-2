@@ -1,4 +1,4 @@
-import { ColorModel } from "../../data/models/color.entity";
+import { ColorModel } from "../../data/models/color.model";
 import { SQLiteRepository } from "../../data/repositories/sqlite.repository";
 import { Color } from "../entities/color.entity";
 import { IRepository } from "../repository/repository.entity";

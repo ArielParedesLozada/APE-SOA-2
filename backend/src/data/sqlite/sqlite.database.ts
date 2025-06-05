@@ -19,8 +19,11 @@ export class SQLiteDatabase extends IDatabase {
         this.entities = entities
     }
 
-    public static getInstance(options: Options) {
+    public static getInstance(options?: Options) {
         if (this.instance == null) {
+            if (!options) {
+                throw new Error("No hay base inicializada y se necesitan parametros")
+            }
             this.instance = new SQLiteDatabase(options)
         }
         return this.instance

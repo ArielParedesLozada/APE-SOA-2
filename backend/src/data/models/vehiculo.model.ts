@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { MarcaModel } from "./marca.model";
 import { ModeloModel } from "./modelo.model";
-import { ColorModel } from "./color.entity";
+import { ColorModel } from "./color.model";
 
 @Entity("vehiculos")
 export class VehiculoModel {

@@ -2,7 +2,7 @@ import { AppRoutes } from "./presentation/routes";
 import { Server } from "./presentation/server";
 import { envs } from "./config/envs";
 import { SQLiteDatabase } from "./data/sqlite/sqlite.database";
-import { ColorModel } from "./data/models/color.entity";
+import { ColorModel } from "./data/models/color.model";
 import { VehiculoModel } from "./data/models/vehiculo.model";
 import { MarcaModel } from "./data/models/marca.model";
 import { ModeloModel } from "./data/models/modelo.model";
@@ -14,7 +14,7 @@ import { ModeloModel } from "./data/models/modelo.model";
 
 async function main() {
     const database = SQLiteDatabase.getInstance({
-        database: "dev.sqlite",
+        database: envs.SQLITE_DB,
         entities: [ColorModel, VehiculoModel, MarcaModel, ModeloModel]
     })
 
@@ -22,7 +22,7 @@ async function main() {
 
     new Server({
         port: envs.PORT,
-        routes: AppRoutes.routes(database)
+        routes: AppRoutes.routes
     })
         .start();
 }
