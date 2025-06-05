@@ -18,14 +18,14 @@ export class VehiculoModel {
     anio!: number; 
 
     @ManyToOne(() => MarcaModel, (marca) => marca.vehiculos)
-    @JoinColumn({ name: "id" }) 
+    @JoinColumn({ name: "marca_id" }) 
     marca!: MarcaModel;
 
     @ManyToOne(() => ModeloModel, (modelo) => modelo.vehiculos)
-    @JoinColumn({ name: "id" }) 
+    @JoinColumn({ name: "modelo_id" }) 
     modelo!: ModeloModel;
 
     @ManyToOne(() => ColorModel, (color) => color.vehiculos)
-    @JoinColumn({ name: "id" }) 
+    @JoinColumn({ name: "color_id" }) 
     color!: ColorModel;
 }
