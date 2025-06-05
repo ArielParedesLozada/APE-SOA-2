@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { ColorRoutes } from "./colores/routes";
+import { SQLiteDatabase } from "../data/sqlite/sqlite.database";
 
 export class AppRoutes {
     constructor() { }
@@ -11,6 +13,8 @@ export class AppRoutes {
                 message: "Hola Papus"
             })
         });
+
+        router.use('/waza', ColorRoutes.routes)
         return router;
     }
 }
