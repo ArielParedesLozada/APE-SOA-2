@@ -1,5 +1,5 @@
 import { DataSource } from "typeorm";
-import { IDatabase } from "../interfaces/database.datasource";
+import { IDatabase } from "../database.datasource";
 
 interface Options {
     database: string,

@@ -1,14 +1,11 @@
 import { Router } from "express";
-import { SQLiteRepository } from "../data/sqlite/repositories/sqlite.repository";
-import { SQLiteDatabase } from "../data/sqlite/sqlite.database";
-import { ColorModel } from "../data/sqlite/models/color.entity";
-import { IRepository } from "../data/interfaces/repository.datasource";
 import { ColorRoutes } from "./colores/routes";
+import { SQLiteDatabase } from "../data/sqlite/sqlite.database";
 
 export class AppRoutes {
     constructor() { }
 
-    static get routes(): Router {
+    static routes(database: SQLiteDatabase): Router {
         const router = Router();
         // Definir todos mis rutas principales
         router.get('/', (req, res) => {
@@ -17,7 +14,7 @@ export class AppRoutes {
             })
         });
 
-        router.use('/waza', ColorRoutes.routes)
+        router.use('/waza', ColorRoutes.routes(database))
         return router;
     }
 }

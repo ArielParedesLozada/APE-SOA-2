@@ -1,5 +1,5 @@
-import { ColorModel } from "../../data/sqlite/models/color.entity";
-import { SQLiteRepository } from "../../data/sqlite/repositories/sqlite.repository";
+import { ColorModel } from "../../data/models/color.entity";
+import { SQLiteRepository } from "../../data/repositories/sqlite.repository";
 import { Color } from "../entities/color.entity";
 import { IRepository } from "../repository/repository.entity";
 

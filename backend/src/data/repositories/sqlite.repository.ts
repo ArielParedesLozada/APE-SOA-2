@@ -1,6 +1,6 @@
 import { EntityTarget, ObjectLiteral, Repository } from "typeorm";
-import { IRepository } from "../../interfaces/repository.datasource";
-import { SQLiteDatabase } from "../sqlite.database";
+import { IRepository } from "../repository.datasource";
+import { SQLiteDatabase } from "../sqlite/sqlite.database";
 
 export class SQLiteRepository<T extends ObjectLiteral> extends IRepository<T> {
     private readonly datasource: Repository<T>

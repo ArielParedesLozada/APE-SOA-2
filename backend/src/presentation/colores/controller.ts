@@ -1,14 +1,12 @@
 import { Request, Response } from "express";
-import { IRepository } from "../../data/interfaces/repository.datasource";
-import { ColorModel } from "../../data/sqlite/models/color.entity";
+import { IRepository } from "../../data/repository.datasource";
+import { ColorModel } from "../../data/models/color.entity";
 
 export class ColorController {
     constructor(
         private readonly repository: IRepository<ColorModel>
     ) {
-
     }
-
     getAll = async (req: Request, res: Response) => {
         try {
             const models = await this.repository.findAll();

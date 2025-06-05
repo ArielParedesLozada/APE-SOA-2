@@ -1,18 +1,14 @@
 import { Router } from "express";
-import { SQLiteRepository } from "../../data/sqlite/repositories/sqlite.repository";
-import { SQLiteDatabase } from "../../data/sqlite/sqlite.database";
-import { ColorModel } from "../../data/sqlite/models/color.entity";
+import { SQLiteRepository } from "../../data/repositories/sqlite.repository";
+import { ColorModel } from "../../data/models/color.entity";
 import { ColorController } from "./controller";
+import { SQLiteDatabase } from "../../data/sqlite/sqlite.database";
 
 export class ColorRoutes {
-    constructor() { }
-
-    static get routes(): Router {
+    constructor() {
+    }
+    static routes(database: SQLiteDatabase): Router {
         const router = Router();
-        const database = SQLiteDatabase.getInstance({
-            database: "dev.sqlite",
-            entities: [ColorModel]
-        })
         const repository = new SQLiteRepository<ColorModel>(ColorModel, database)
         const controller = new ColorController(repository)
         // Definir todos mis rutas principales
