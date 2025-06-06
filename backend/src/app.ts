@@ -1,11 +1,8 @@
 import { AppRoutes } from "./presentation/routes";
 import { Server } from "./presentation/server";
 import { envs } from "./config/envs";
-import { SQLiteDatabase } from "./data/sqlite/sqlite.database";
-import { ColorModel } from "./data/models/color.model";
-import { VehiculoModel } from "./data/models/vehiculo.model";
-import { MarcaModel } from "./data/models/marca.model";
-import { ModeloModel } from "./data/models/modelo.model";
+import { MySQLDatabase } from "./data/mysql/mysql.database";
+import Models from "./data/models";
 
 (() => {
     main();
@@ -13,9 +10,12 @@ import { ModeloModel } from "./data/models/modelo.model";
 
 
 async function main() {
-    const database = SQLiteDatabase.getInstance({
-        database: envs.SQLITE_DB,
-        entities: [ColorModel, VehiculoModel, MarcaModel, ModeloModel]
+    const database = MySQLDatabase.getInstance({
+        database: envs.MYSQL_DB,
+        password: envs.MYSQL_PASSWORD ?? '',
+        port: envs.MYSQL_PORT,
+        username: envs.MYSQL_USER,
+        entities: Models
     })
 
     await database.connect()
