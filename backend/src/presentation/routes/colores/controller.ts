@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { IRepository } from "../../data/repository.datasource";
-import { ColorModel } from "../../data/models/color.model";
+import { IDatabaseRepository } from "../../../data/repository.datasource";
+import { ColorModel } from "../../../data/models/color.model";
 
 export class ColorController {
     constructor(
-        private readonly repository: IRepository<ColorModel>
+        private readonly repository: IDatabaseRepository<ColorModel>
     ) {
     }
     getAll = async (req: Request, res: Response) => {

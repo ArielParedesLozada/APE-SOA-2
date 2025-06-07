@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { ColorRoutes } from "./colores/routes";
-import { SQLiteDatabase } from "../data/sqlite/sqlite.database";
+import { ColorRoutes } from "./routes/colores/routes";
 
 export class AppRoutes {
     constructor() { }

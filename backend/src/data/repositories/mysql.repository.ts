@@ -1,8 +1,8 @@
 import { EntityTarget, ObjectLiteral, Repository } from "typeorm";
-import { IRepository } from "../repository.datasource";
+import { IDatabaseRepository } from "../repository.datasource";
 import { MySQLDatabase } from "../mysql/mysql.database";
 
-export class MySQLRepository<T extends ObjectLiteral> extends IRepository<T> {
+export class MySQLRepository<T extends ObjectLiteral> extends IDatabaseRepository<T> {
     private readonly datasource: Repository<T>
     constructor(
         entity: EntityTarget<T>,

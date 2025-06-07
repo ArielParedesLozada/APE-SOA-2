@@ -1,4 +1,4 @@
-export abstract class IRepo<T> {
+export abstract class IEntityRepository<T> {
     public abstract findAll(): Promise<T[]>;
     public abstract findById(id: number): Promise<T>;
     public abstract create(created : T) : Promise<boolean>;
