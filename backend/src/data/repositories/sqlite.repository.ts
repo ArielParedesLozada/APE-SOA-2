@@ -15,12 +15,17 @@ export class SQLiteRepository<T extends ObjectLiteral> extends IDatabaseReposito
         this.datasource = database.dataSource.getRepository(entity)
     }
 
-    public findAll(): Promise<T[]> {
+    public findAll(relations?: string[]): Promise<T[]> {
         return this.datasource.find()
     }
 
-    public findById(id: number): Promise<T | null> {
-        return this.datasource.findOneBy(id as any)
+    public findById(id: number, relations?: string[]): Promise<T | null> {
+        return this.datasource.findOne({
+            where: {
+                id: id as any
+            },
+            relations: relations
+        })
     }
 
     public async create(created: T): Promise<boolean> {

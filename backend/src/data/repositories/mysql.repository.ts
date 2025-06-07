@@ -15,12 +15,17 @@ export class MySQLRepository<T extends ObjectLiteral> extends IDatabaseRepositor
         this.datasource = database.dataSource.getRepository(entity)
     }
 
-    public findAll(): Promise<T[]> {
-        return this.datasource.find()
+    public findAll(relations?: string[]): Promise<T[]> {
+        return this.datasource.find({ relations })
     }
 
-    public findById(id: number): Promise<T | null> {
-        return this.datasource.findOneBy(id as any)
+    public findById(id: number, relations?: string[]): Promise<T | null> {
+        return this.datasource.findOne({
+            where: {
+                id: id as any
+            },
+            relations: relations
+        })
     }
 
     public async create(created: T): Promise<boolean> {
