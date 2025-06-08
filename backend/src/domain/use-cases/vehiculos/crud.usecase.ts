@@ -1,7 +1,7 @@
 import { DatasourceFactory } from "../../../infraestructure/datasource/datasource.factory";
 import { GlobalDatabase } from "../../../infraestructure/datasource/datasource.global";
 import { EntityRepository } from "../../repository/repository.entity";
-import { CustomError } from "../../entities/error.entity";
+import { CustomError } from "../../errors/error.entity";
 import { Vehiculo } from "../../entities/vehiculo.entity";
 import { VehiculoMapper } from "../../../infraestructure/mapper/vehiculo.mapper";
 import { VehiculoModel } from "../../../data/models/vehiculo.model";
@@ -13,7 +13,7 @@ export class CRUD {
         const database = GlobalDatabase.getInstance().database
         const datasource = DatasourceFactory.generateRepository(database, VehiculoModel)
         if (!datasource) {
-            throw new Error("Repositorio no implementado")
+            throw new CustomError(400, "Repositorio no implementado", null)
         }
         const mapper = new VehiculoMapper()
         this.repository = new EntityRepository<Vehiculo>(datasource, mapper)
@@ -23,46 +23,61 @@ export class CRUD {
             const result = this.repository.findAll(['marca', 'modelo', 'color'])
             return result
         } catch (error) {
-            throw new CustomError(400, "Error al cargar los vehiculos")
+            throw new CustomError(400, "Error al cargar los vehiculos", error)
         }
     }
 
     public get(id: number): Promise<Vehiculo | null> {
         try {
             const result = this.repository.findById(id, ['marca', 'modelo', 'color'])
-            if (!result) {
-                throw new CustomError(400, "No encontrado")
+            return result
+        } catch (error) {
+            throw new CustomError(400, "No encontrado", "Vehiculo no encontrado")
+        }
+    }
+
+    public async create(created: any): Promise<boolean> {
+        try {
+            const result = await this.repository.create(created)
+            console.log(result)
+            if (result instanceof Error) {
+                throw result
             }
             return result
         } catch (error) {
-            throw new CustomError(400, "No encontrado")
+            throw error
         }
     }
 
-    public create(created: Vehiculo): Promise<boolean> {
+    public async update(id: number, updated: Vehiculo): Promise<boolean> {
         try {
-            const result = this.repository.create(created)
+            const toUpdate = await this.repository.findById(id)
+            if (!toUpdate) {
+                throw new CustomError(404, "Vehiculo no encontrado", "No encontrado")
+            }
+            const result = await this.repository.update(updated)
+            if (result instanceof Error) {
+                throw result
+            }
             return result
         } catch (error) {
-            throw new CustomError(400, "No se creo")
+            throw error
         }
     }
 
-    public update(updated: Vehiculo): Promise<boolean> {
+    public async delete(id: number): Promise<boolean> {
         try {
-            const result = this.repository.update(updated)
+            const deleted = await this.repository.findById(id)
+            if (!deleted) {
+                throw new CustomError(404, "Vehiculo no encontrado", "No encontrado")
+            }
+            const result = await this.repository.delete(deleted)
+            if (result instanceof Error) {
+                throw result
+            }
             return result
         } catch (error) {
-            throw new CustomError(400, "No se actualizo")
-        }
-    }
-
-    public delete(deleted: Vehiculo): Promise<boolean> {
-        try {
-            const result = this.repository.delete(deleted)
-            return result
-        } catch (error) {
-            throw new CustomError(400, "No se borro")
+            throw error
         }
     }
 }

@@ -4,7 +4,10 @@ import { IMapper } from "./mapper.abstract";
 
 export class MarcaMapper extends IMapper<Marca> {
     public toDomain(model: any): Marca {
-        return new Marca(model.id, model.name)
+        return new Marca(
+            model.id ?? null, 
+            model.name
+        )
     }
     public toModel(entity: Marca) {
         const model = new MarcaModel()

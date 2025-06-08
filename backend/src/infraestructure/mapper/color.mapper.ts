@@ -4,7 +4,10 @@ import { IMapper } from "./mapper.abstract";
 
 export class ColorMapper extends IMapper<Color> {
     public toDomain(model: any): Color {
-        return new Color(model.id, model.name)
+        return new Color(
+            model.id ?? null, 
+            model.name
+        )
     }
     public toModel(entity: Color) {
         const model = new ColorModel()

@@ -15,17 +15,19 @@ export class EntityRepository<Entity> {
         const model = await this.datasource.findById(id, relations)
         return model ? this.mapper.toDomain(model) : null
     }
-    public async create(created: Entity): Promise<boolean> {
+    public async create(created: Entity): Promise<boolean | Error> {
         const entity = this.mapper.toModel(created)
-        return this.datasource.create(entity)
+        const [result, error] = await this.datasource.create(entity)
+        return error ?? result
     }
-    public async update(updated: Entity): Promise<boolean> {
+    public async update(updated: Entity): Promise<boolean | Error> {
         const entity = this.mapper.toModel(updated)
-        return this.datasource.update(entity)
-
+        const [result, error] = await this.datasource.update(entity)
+        return error ?? result
     }
-    public async delete(deleted: Entity): Promise<boolean> {
+    public async delete(deleted: Entity): Promise<boolean | Error> {
         const entity = this.mapper.toModel(deleted)
-        return this.datasource.delete(entity)
+        const [result, error] = await this.datasource.delete(entity)
+        return error ?? result
     }
 }

@@ -2,7 +2,7 @@ import { DatasourceFactory } from "../../../infraestructure/datasource/datasourc
 import { GlobalDatabase } from "../../../infraestructure/datasource/datasource.global";
 import { Color } from "../../entities/color.entity";
 import { EntityRepository } from "../../repository/repository.entity";
-import { CustomError } from "../../entities/error.entity";
+import { CustomError } from "../../errors/error.entity";
 import { Marca } from "../../entities/marca.entity";
 import { MarcaModel } from "../../../data/models/marca.model";
 import { MarcaMapper } from "../../../infraestructure/mapper/marca.mapper";

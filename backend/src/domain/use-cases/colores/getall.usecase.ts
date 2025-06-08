@@ -4,7 +4,7 @@ import { GlobalDatabase } from "../../../infraestructure/datasource/datasource.g
 import { Color } from "../../entities/color.entity";
 import { ColorMapper } from "../../../infraestructure/mapper/color.mapper";
 import { EntityRepository } from "../../repository/repository.entity";
-import { CustomError } from "../../entities/error.entity";
+import { CustomError } from "../../errors/error.entity";
 
 export class CargaColores {
     private readonly repository : EntityRepository<Color>
@@ -23,7 +23,7 @@ export class CargaColores {
             const result = this.repository.findAll()
             return result
         } catch (error) {
-            throw new CustomError(404, "Error al cargar los colores")            
+            throw new CustomError(404, "Error al cargar los colores", error)            
         }
     }
 }

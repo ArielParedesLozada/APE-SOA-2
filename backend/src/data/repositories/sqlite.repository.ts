@@ -1,6 +1,7 @@
 import { EntityTarget, ObjectLiteral, Repository } from "typeorm";
 import { IDatabaseRepository } from "../repository.datasource";
 import { SQLiteDatabase } from "../sqlite/sqlite.database";
+import { CustomError } from "../../domain/errors/error.entity";
 
 export class SQLiteRepository<T extends ObjectLiteral> extends IDatabaseRepository<T> {
     private readonly datasource: Repository<T>
@@ -28,18 +29,31 @@ export class SQLiteRepository<T extends ObjectLiteral> extends IDatabaseReposito
         })
     }
 
-    public async create(created: T): Promise<boolean> {
-        await this.datasource.save(created);
-        return true;
+
+    public async create(created: T): Promise<[boolean, CustomError?]> {
+        try {
+            const flag = !!this.datasource.save(created);
+            return [flag]
+        } catch (error) {
+            return [false, new CustomError(400, "Error al crear", error)]
+        }
     }
 
-    public async update(updated: T): Promise<boolean> {
-        await this.datasource.save(updated);
-        return true;
+    public async update(updated: T): Promise<[boolean, CustomError?]> {
+        try {
+            const flag = !!this.datasource.save(updated);
+            return [flag]
+        } catch (error) {
+            return [false, new CustomError(400, "Error al crear", error)]
+        }
     }
 
-    public async delete(deleted: T): Promise<boolean> {
-        await this.datasource.remove(deleted);
-        return true;
+    public async delete(deleted: T): Promise<[boolean, CustomError?]> {
+        try {
+            const flag = !!this.datasource.delete(deleted);
+            return [flag]
+        } catch (error) {
+            return [false, new CustomError(400, "Error al crear", error)]
+        }
     }
 }

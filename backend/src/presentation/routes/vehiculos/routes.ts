@@ -11,6 +11,8 @@ export class VehiculoRoutes {
         router.get('/', controller.getAll);
         router.get('/:id', controller.getOne)
         router.post('/', controller.create)
+        router.delete('/:id', controller.delete)
+        router.patch('/:id', controller.update)
         return router;
     }
 }

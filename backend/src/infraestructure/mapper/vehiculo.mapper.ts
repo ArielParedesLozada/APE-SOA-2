@@ -11,7 +11,7 @@ export class VehiculoMapper extends IMapper<Vehiculo> {
     }
     public toDomain(model: any): Vehiculo {
         return new Vehiculo(
-            model.id,
+            model.id ?? null,
             model.placa,
             model.chasis,
             model.anio,

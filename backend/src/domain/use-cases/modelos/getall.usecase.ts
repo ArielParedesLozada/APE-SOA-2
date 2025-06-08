@@ -4,7 +4,7 @@ import { GlobalDatabase } from "../../../infraestructure/datasource/datasource.g
 import { Color } from "../../entities/color.entity";
 import { ColorMapper } from "../../../infraestructure/mapper/color.mapper";
 import { EntityRepository } from "../../repository/repository.entity";
-import { CustomError } from "../../entities/error.entity";
+import { CustomError } from "../../errors/error.entity";
 import { Modelo } from "../../entities/modelo.entity";
 import { ModeloModel } from "../../../data/models/modelo.model";
 import { ModeloMapper } from "../../../infraestructure/mapper/modelo.mapper";

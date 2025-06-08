@@ -4,7 +4,10 @@ import { IMapper } from "./mapper.abstract";
 
 export class ModeloMapper extends IMapper<Modelo> {
     public toDomain(model: any): Modelo {
-        return new Modelo(model.id, model.name)
+        return new Modelo(
+            model.id ?? null, 
+            model.name
+        )
     }
     public toModel(entity: Modelo) {
         const model = new ModeloModel()
