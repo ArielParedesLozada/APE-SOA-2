@@ -24,7 +24,7 @@ export class CargaMarcas {
             const result = this.repository.findAll()
             return result
         } catch (error) {
-            throw new CustomError(404, "Error al cargar las marcas")            
+            throw new CustomError(404, "Error al cargar las marcas", error)            
         }
     }
 }

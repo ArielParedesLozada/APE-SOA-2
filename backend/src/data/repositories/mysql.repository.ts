@@ -44,7 +44,7 @@ export class MySQLRepository<T extends ObjectLiteral> extends IDatabaseRepositor
             const flag = !!await this.datasource.save(updated);
             return [flag]
         } catch (error) {
-            return [false, new CustomError(400, "Error al crear", error)]
+            return [false, new CustomError(400, "Error al actualizar", error)]
         }
     }
 
@@ -53,7 +53,7 @@ export class MySQLRepository<T extends ObjectLiteral> extends IDatabaseRepositor
             const flag = !!await this.datasource.delete(deleted);
             return [flag]
         } catch (error) {
-            return [false, new CustomError(400, "Error al crear", error)]
+            return [false, new CustomError(400, "Error al borrar", error)]
         }
     }
 }

@@ -49,13 +49,19 @@ export class CRUD {
         }
     }
 
-    public async update(id: number, updated: Vehiculo): Promise<boolean> {
+    public async update(id: number, data: Partial<Vehiculo>): Promise<boolean> {
         try {
-            const toUpdate = await this.repository.findById(id)
+            const toUpdate = await this.repository.findById(id, ['marca', 'modelo', 'color'])
             if (!toUpdate) {
                 throw new CustomError(404, "Vehiculo no encontrado", "No encontrado")
             }
-            const result = await this.repository.update(updated)
+            toUpdate.placa = data.placa ?? toUpdate.placa;
+            toUpdate.chasis = data.chasis ?? toUpdate.chasis;
+            toUpdate.anio = data.anio ?? toUpdate.anio;
+            toUpdate.marca = data.marca ?? toUpdate.marca;
+            toUpdate.modelo = data.modelo ?? toUpdate.modelo;
+            toUpdate.color = data.color ?? toUpdate.color;
+            const result = await this.repository.update(toUpdate)
             if (result instanceof Error) {
                 throw result
             }
@@ -67,7 +73,7 @@ export class CRUD {
 
     public async delete(id: number): Promise<boolean> {
         try {
-            const deleted = await this.repository.findById(id)
+            const deleted = await this.repository.findById(id, ['marca', 'modelo', 'color'])
             if (!deleted) {
                 throw new CustomError(404, "Vehiculo no encontrado", "No encontrado")
             }

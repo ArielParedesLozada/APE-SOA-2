@@ -26,7 +26,7 @@ export class CargaModelos {
             const result = this.repository.findAll()
             return result
         } catch (error) {
-            throw new CustomError(404, "Error al cargar los colores")            
+            throw new CustomError(404, "Error al cargar los colores", error)            
         }
     }
 }

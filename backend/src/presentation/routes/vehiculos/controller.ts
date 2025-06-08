@@ -50,13 +50,10 @@ export class VehiculoController {
         try {
             const { id } = req.params
             const _id = parseInt(id)
-            const entity = new VehiculoMapper().toDomain(req.body)
-            console.log(entity)
-            const updated = await this.usecase.update(_id, entity)
+            const updated = await this.usecase.update(_id, req.body)
             res.json(updated)
         } catch (error) {
             if (error instanceof CustomError) {
-                console.log(error)
                 res.status(error.statusCode).json(error)
                 return
             }
