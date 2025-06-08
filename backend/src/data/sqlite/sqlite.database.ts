@@ -10,23 +10,12 @@ export class SQLiteDatabase extends IDatabase {
     public dataSource?: DataSource
     private database: string
     private entities: Function[]
-    private static instance: SQLiteDatabase
 
-    private constructor(options: Options) {
+    constructor(options: Options) {
         super()
         const { database, entities } = options
         this.database = database
         this.entities = entities
-    }
-
-    public static getInstance(options?: Options) {
-        if (this.instance == null) {
-            if (!options) {
-                throw new Error("No hay base inicializada y se necesitan parametros")
-            }
-            this.instance = new SQLiteDatabase(options)
-        }
-        return this.instance
     }
 
     public async connect(): Promise<boolean> {

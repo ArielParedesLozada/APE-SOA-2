@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { ColorRoutes } from "./colores/routes";
-import { SQLiteDatabase } from "../data/sqlite/sqlite.database";
+import { ColorRoutes } from "./routes/colores/routes";
+import { VehiculoRoutes } from "./routes/vehiculos/routes";
 
 export class AppRoutes {
     constructor() { }
@@ -14,7 +14,8 @@ export class AppRoutes {
             })
         });
 
-        router.use('/waza', ColorRoutes.routes)
+        router.use('/color', ColorRoutes.routes)
+        router.use('/vehiculo', VehiculoRoutes.routes)
         return router;
     }
 }

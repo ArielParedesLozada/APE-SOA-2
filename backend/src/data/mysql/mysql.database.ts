@@ -16,9 +16,8 @@ export class MySQLDatabase extends IDatabase {
     private username: string
     private password: string
     private entities: Function[]
-    private static instance: MySQLDatabase
 
-    private constructor(options: Options) {
+    constructor(options: Options) {
         super()
         const { database, password, port, username, entities } = options
         this.database = database
@@ -26,16 +25,6 @@ export class MySQLDatabase extends IDatabase {
         this.password = password
         this.username = username
         this.entities = entities
-    }
-
-    public static getInstance(options?: Options) {
-        if (this.instance == null) {
-            if (!options) {
-                throw new Error("No hay base inicializada y se necesitan parametros")
-            }
-            this.instance = new MySQLDatabase(options)
-        }
-        return this.instance
     }
 
     public async connect(): Promise<boolean> {

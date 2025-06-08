@@ -1,28 +1,27 @@
-import { AppRoutes } from "./presentation/routes";
-import { Server } from "./presentation/server";
-import { envs } from "./config/envs";
-import { MySQLDatabase } from "./data/mysql/mysql.database";
-import Models from "./data/models";
+import { envs } from "./config/envs"
+import Models from "./data/models"
+import { MySQLDatabase } from "./data/mysql/mysql.database"
+import { GlobalDatabase } from "./infraestructure/datasource/datasource.global"
+import { AppRoutes } from "./presentation/routes"
+import { Server } from "./presentation/server"
+
 
 (() => {
-    main();
+    main()
 })()
 
-
 async function main() {
-    const database = MySQLDatabase.getInstance({
+    const database = new MySQLDatabase({
         database: envs.MYSQL_DB,
         password: envs.MYSQL_PASSWORD ?? '',
         port: envs.MYSQL_PORT,
         username: envs.MYSQL_USER,
         entities: Models
     })
-
-    await database.connect()
-
-    new Server({
+    await GlobalDatabase.getInstance(database).database.connect()
+    const server = new Server({
         port: envs.PORT,
         routes: AppRoutes.routes
     })
-        .start();
+    await server.start()
 }

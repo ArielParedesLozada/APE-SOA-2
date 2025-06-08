@@ -1,15 +1,14 @@
 import { Request, Response } from "express";
-import { IRepository } from "../../data/repository.datasource";
-import { ColorModel } from "../../data/models/color.model";
+import ColorUseCases from "../../../domain/use-cases/colores";
 
 export class ColorController {
     constructor(
-        private readonly repository: IRepository<ColorModel>
     ) {
     }
     getAll = async (req: Request, res: Response) => {
         try {
-            const models = await this.repository.findAll();
+            const usecase = new ColorUseCases.CargaColores()
+            const models = await usecase.cargaColores()
             res.json(models);
         } catch (error) {
             console.error("Error al obtener los colores:", error);
