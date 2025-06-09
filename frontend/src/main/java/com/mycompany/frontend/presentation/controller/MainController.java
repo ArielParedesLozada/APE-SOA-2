@@ -9,6 +9,7 @@ import com.mycompany.frontend.domain.usecase.DeleteVehiculoUseCase;
 import com.mycompany.frontend.domain.usecase.GetAllColorsUseCase;
 import com.mycompany.frontend.domain.usecase.GetAllMarcasUseCase;
 import com.mycompany.frontend.domain.usecase.GetAllModelosByMarcaUseCase;
+import com.mycompany.frontend.domain.usecase.GetAllModelosUseCase;
 import com.mycompany.frontend.domain.usecase.GetAllVehiculosUseCase;
 import com.mycompany.frontend.domain.usecase.UpdateVehiculoUseCase;
 import com.mycompany.frontend.presentation.view.MainFrame;
@@ -20,38 +21,39 @@ import java.util.Collections;
 import java.util.List;
 
 public class MainController {
+
     private final MainFrame view;
-    private final GetAllMarcasUseCase    getAllMarcas;
-    private final GetAllModelosByMarcaUseCase getModelosByMarca;
-    private final GetAllColorsUseCase    getAllColors;
+    private final GetAllMarcasUseCase getAllMarcas;
+    private final GetAllModelosUseCase getAllModelos;
+    private final GetAllColorsUseCase getAllColors;
     private final GetAllVehiculosUseCase getAllVehiculos;
-    private final CreateVehiculoUseCase  createVehiculo;
-    private final UpdateVehiculoUseCase  updateVehiculo;
-    private final DeleteVehiculoUseCase  deleteVehiculo;
+    private final CreateVehiculoUseCase createVehiculo;
+    private final UpdateVehiculoUseCase updateVehiculo;
+    private final DeleteVehiculoUseCase deleteVehiculo;
 
     // caches para mapear nombres a IDs
-    private List<Marca>  marcasCache  = Collections.emptyList();
+    private List<Marca> marcasCache = Collections.emptyList();
     private List<Modelo> modelosCache = Collections.emptyList();
-    private List<Color>  colorsCache  = Collections.emptyList();
+    private List<Color> colorsCache = Collections.emptyList();
 
     public MainController(
-        MainFrame view,
-        GetAllMarcasUseCase getAllMarcas,
-        GetAllModelosByMarcaUseCase getModelosByMarca,
-        GetAllColorsUseCase getAllColors,
-        GetAllVehiculosUseCase getAllVehiculos,
-        CreateVehiculoUseCase createVehiculo,
-        UpdateVehiculoUseCase updateVehiculo,
-        DeleteVehiculoUseCase deleteVehiculo
+            MainFrame view,
+            GetAllMarcasUseCase getAllMarcas,
+            GetAllModelosUseCase getModelos,
+            GetAllColorsUseCase getAllColors,
+            GetAllVehiculosUseCase getAllVehiculos,
+            CreateVehiculoUseCase createVehiculo,
+            UpdateVehiculoUseCase updateVehiculo,
+            DeleteVehiculoUseCase deleteVehiculo
     ) {
-        this.view               = view;
-        this.getAllMarcas       = getAllMarcas;
-        this.getModelosByMarca  = getModelosByMarca;
-        this.getAllColors       = getAllColors;
-        this.getAllVehiculos    = getAllVehiculos;
-        this.createVehiculo     = createVehiculo;
-        this.updateVehiculo     = updateVehiculo;
-        this.deleteVehiculo     = deleteVehiculo;
+        this.view = view;
+        this.getAllMarcas = getAllMarcas;
+        this.getAllModelos = getModelos;
+        this.getAllColors = getAllColors;
+        this.getAllVehiculos = getAllVehiculos;
+        this.createVehiculo = createVehiculo;
+        this.updateVehiculo = updateVehiculo;
+        this.deleteVehiculo = deleteVehiculo;
     }
 
     public void initController() {
@@ -59,18 +61,19 @@ public class MainController {
         loadVehiculos();
 
         view.getBtnLoadCatalogs().addActionListener(e -> loadCatalogs());
-        view.getComboMarca().addActionListener(e -> onMarcaChanged());
+//         view.getComboMarca().addActionListener(e -> onMarcaChanged());
         view.getBtnCreateVehiculo().addActionListener(e -> onSaveVehiculo());
         view.getBtnDeleteVehiculo().addActionListener(e -> onDeleteVehiculo());
         view.getBtnClearForm().addActionListener(e -> clearForm());
         view.getTableVehiculos()
-            .getSelectionModel()
-            .addListSelectionListener(e -> onTableSelection());
+                .getSelectionModel()
+                .addListSelectionListener(e -> onTableSelection());
     }
 
     private void loadCatalogs() {
         loadMarcas();
         loadColors();
+        loadModelos();
     }
 
     private void loadMarcas() {
@@ -89,21 +92,24 @@ public class MainController {
         });
     }
 
+    /*
     private void onMarcaChanged() {
         String nombreMarca = (String) view.getComboMarca().getSelectedItem();
-        if (nombreMarca == null) return;
+        if (nombreMarca == null) {
+            return;
+        }
         int marcaId = marcasCache.stream()
-            .filter(m -> m.getNombre().equals(nombreMarca))
-            .map(Marca::getId)
-            .findFirst()
-            .orElse(0);
+                .filter(m -> m.getNombre().equals(nombreMarca))
+                .map(Marca::getId)
+                .findFirst()
+                .orElse(0);
         loadModelos(marcaId);
     }
-
-    private void loadModelos(int marcaId) {
+     */
+    private void loadModelos() {
         SwingUtilities.invokeLater(() -> {
             try {
-                modelosCache = getModelosByMarca.execute(marcaId);
+                modelosCache = getAllModelos.execute();
                 JComboBox<String> cb = view.getComboModelo();
                 cb.removeAllItems();
                 for (Modelo m : modelosCache) {
@@ -135,8 +141,8 @@ public class MainController {
             try {
                 List<Vehiculo> items = getAllVehiculos.execute();
                 DefaultTableModel model = (DefaultTableModel) view
-                    .getTableVehiculos()
-                    .getModel();
+                        .getTableVehiculos()
+                        .getModel();
                 model.setRowCount(0);
                 for (Vehiculo v : items) {
                     model.addRow(new Object[]{
@@ -160,34 +166,34 @@ public class MainController {
             int id = view.getTxtId().isEnabled()
                     ? Integer.parseInt(view.getTxtId().getText())
                     : 0;
-            String placa  = view.getTxtPlaca().getText().trim();
+            String placa = view.getTxtPlaca().getText().trim();
             String chasis = view.getTxtChasis().getText().trim();
-            int anio      = Integer.parseInt(view.getTxtAnio().getText().trim());
+            int anio = Integer.parseInt(view.getTxtAnio().getText().trim());
 
-            String nomMarca  = (String) view.getComboMarca().getSelectedItem();
+            String nomMarca = (String) view.getComboMarca().getSelectedItem();
             String nomModelo = (String) view.getComboModelo().getSelectedItem();
-            String nomColor  = (String) view.getComboColor().getSelectedItem();
+            String nomColor = (String) view.getComboColor().getSelectedItem();
 
-            Marca marca   = new Marca(
-                marcasCache.stream()
-                    .filter(m -> m.getNombre().equals(nomMarca))
-                    .map(Marca::getId)
-                    .findFirst().orElse(0),
-                nomMarca
+            Marca marca = new Marca(
+                    marcasCache.stream()
+                            .filter(m -> m.getNombre().equals(nomMarca))
+                            .map(Marca::getId)
+                            .findFirst().orElse(0),
+                    nomMarca
             );
             Modelo modelo = new Modelo(
-                modelosCache.stream()
-                    .filter(m -> m.getNombre().equals(nomModelo))
-                    .map(Modelo::getId)
-                    .findFirst().orElse(0),
-                nomModelo
+                    modelosCache.stream()
+                            .filter(m -> m.getNombre().equals(nomModelo))
+                            .map(Modelo::getId)
+                            .findFirst().orElse(0),
+                    nomModelo
             );
-            Color color   = new Color(
-                colorsCache.stream()
-                    .filter(c -> c.getNombre().equals(nomColor))
-                    .map(Color::getId)
-                    .findFirst().orElse(0),
-                nomColor
+            Color color = new Color(
+                    colorsCache.stream()
+                            .filter(c -> c.getNombre().equals(nomColor))
+                            .map(Color::getId)
+                            .findFirst().orElse(0),
+                    nomColor
             );
 
             Vehiculo v = new Vehiculo(id, placa, chasis, anio, marca, modelo, color);
@@ -224,29 +230,31 @@ public class MainController {
 
     private void onTableSelection() {
         int row = view.getTableVehiculos().getSelectedRow();
-        if (row < 0) return;
+        if (row < 0) {
+            return;
+        }
         view.getTxtId().setText(
-            view.getTableVehiculos().getValueAt(row, 0).toString()
+                view.getTableVehiculos().getValueAt(row, 0).toString()
         );
         view.getTxtId().setEnabled(true);
 
         view.getComboMarca().setSelectedItem(
-            view.getTableVehiculos().getValueAt(row, 1).toString()
+                view.getTableVehiculos().getValueAt(row, 1).toString()
         );
         view.getComboModelo().setSelectedItem(
-            view.getTableVehiculos().getValueAt(row, 2).toString()
+                view.getTableVehiculos().getValueAt(row, 2).toString()
         );
         view.getTxtPlaca().setText(
-            view.getTableVehiculos().getValueAt(row, 3).toString()
+                view.getTableVehiculos().getValueAt(row, 3).toString()
         );
         view.getTxtChasis().setText(
-            view.getTableVehiculos().getValueAt(row, 4).toString()
+                view.getTableVehiculos().getValueAt(row, 4).toString()
         );
         view.getTxtAnio().setText(
-            view.getTableVehiculos().getValueAt(row, 5).toString()
+                view.getTableVehiculos().getValueAt(row, 5).toString()
         );
         view.getComboColor().setSelectedItem(
-            view.getTableVehiculos().getValueAt(row, 6).toString()
+                view.getTableVehiculos().getValueAt(row, 6).toString()
         );
     }
 
@@ -263,7 +271,7 @@ public class MainController {
 
     private void showError(String message) {
         JOptionPane.showMessageDialog(
-            view, message, "Error", JOptionPane.ERROR_MESSAGE
+                view, message, "Error", JOptionPane.ERROR_MESSAGE
         );
     }
 }

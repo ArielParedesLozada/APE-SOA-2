@@ -70,7 +70,7 @@ public class ApiService {
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new IOException("Unexpected HTTP code: " + response.code());
+                throw new IOException("Unexpected HTTP code: " + response.code() + "Skibidi");
             }
             String body = response.body().string();
             return mapper.readValue(body, clazz);
@@ -96,7 +96,7 @@ public class ApiService {
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new IOException("Unexpected HTTP code: " + response.code());
+                throw new IOException("Unexpected HTTP code: " + response.code() + "POST "+response );
             }
             String respBody = response.body().string();
             return mapper.readValue(respBody, clazz);
@@ -117,12 +117,13 @@ public class ApiService {
         RequestBody body = RequestBody.create(json, JSON);
         Request request = new Request.Builder()
             .url(baseUrl + path)
-            .put(body)
+            .patch(body)
             .build();
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new IOException("Unexpected HTTP code: " + response.code());
+                System.out.println(response.body().string());
+                throw new IOException("Unexpected HTTP code: " + response.code() + "PUT");
             }
             String respBody = response.body().string();
             return mapper.readValue(respBody, clazz);
@@ -140,7 +141,7 @@ public class ApiService {
             .url(baseUrl + path)
             .delete()
             .build();
-
+        System.out.println("DELETE");
         try (Response response = client.newCall(request).execute()) {
             return response.isSuccessful();
         }

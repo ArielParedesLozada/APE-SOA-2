@@ -9,7 +9,7 @@ import com.mycompany.frontend.domain.usecase.CreateVehiculoUseCase;
 import com.mycompany.frontend.domain.usecase.DeleteVehiculoUseCase;
 import com.mycompany.frontend.domain.usecase.GetAllColorsUseCase;
 import com.mycompany.frontend.domain.usecase.GetAllMarcasUseCase;
-import com.mycompany.frontend.domain.usecase.GetAllModelosByMarcaUseCase;
+import com.mycompany.frontend.domain.usecase.GetAllModelosUseCase;
 import com.mycompany.frontend.domain.usecase.GetAllVehiculosUseCase;
 import com.mycompany.frontend.domain.usecase.UpdateVehiculoUseCase;
 import com.mycompany.frontend.presentation.controller.MainController;
@@ -18,7 +18,7 @@ import com.mycompany.frontend.presentation.view.MainFrame;
 public class Frontend {
     public static void main(String[] args) {
         // 1) Configura tu cliente HTTP apuntando al backend
-        ApiService api = new ApiService("http://localhost:3100");
+        ApiService api = new ApiService("http://localhost:3000");
 
         // 2) Crea las implementaciones de repositorio
         var colorRepo   = new ColorRepositoryImpl(api);
@@ -28,7 +28,7 @@ public class Frontend {
 
         // 3) Instancia tus casos de uso
         var getAllMarcas       = new GetAllMarcasUseCase(marcaRepo);
-        var getAllModelos      = new GetAllModelosByMarcaUseCase(modeloRepo);
+        var getAllModelos      = new GetAllModelosUseCase(modeloRepo);
         var getAllColors       = new GetAllColorsUseCase(colorRepo);
         var getAllVehiculos    = new GetAllVehiculosUseCase(vehRepo);
         var createVehiculo     = new CreateVehiculoUseCase(vehRepo);

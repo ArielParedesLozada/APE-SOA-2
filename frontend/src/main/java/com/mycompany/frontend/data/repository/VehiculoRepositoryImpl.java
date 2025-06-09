@@ -20,7 +20,7 @@ public class VehiculoRepositoryImpl implements VehiculoRepository {
     @Override
     public List<Vehiculo> findAll() throws IOException {
         // GET /vehiculos
-        List<VehiculoDTO> dtos = api.getList("/vehiculos", VehiculoDTO[].class);
+        List<VehiculoDTO> dtos = api.getList("/vehiculo", VehiculoDTO[].class);
         return dtos.stream()
                    .map(VehiculoMapper::fromDTO)
                    .collect(Collectors.toList());
@@ -29,27 +29,27 @@ public class VehiculoRepositoryImpl implements VehiculoRepository {
     @Override
     public Vehiculo findById(int id) throws IOException {
         // GET /vehiculos/{id}
-        VehiculoDTO dto = api.getOne("/vehiculos/" + id, VehiculoDTO.class);
+        VehiculoDTO dto = api.getOne("/vehiculo/" + id, VehiculoDTO.class);
         return VehiculoMapper.fromDTO(dto);
     }
 
     @Override
     public boolean create(Vehiculo v) throws IOException {
         // POST /vehiculos
-        api.post("/vehiculos", v, Void.class);
+        api.post("/vehiculo/", v, Void.class);
         return true;
     }
 
     @Override
     public boolean update(Vehiculo v) throws IOException {
         // PUT /vehiculos/{id}
-        api.put("/vehiculos/" + v.getId(), v, Void.class);
+        api.put("/vehiculo/" + v.getId(), v, Void.class);
         return true;
     }
 
     @Override
     public boolean delete(int id) throws IOException {
         // DELETE /vehiculos/{id}
-        return api.delete("/vehiculos/" + id);
+        return api.delete("/vehiculo/" + id);
     }
 }

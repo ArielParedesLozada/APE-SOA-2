@@ -7,6 +7,6 @@ import com.mycompany.frontend.domain.entity.Modelo;
 public class ModeloMapper {
     public static Modelo fromDTO(ModeloDTO dto) {
         if (dto == null) return null;
-        return new Modelo(dto.getId(), dto.getName());
+        return new Modelo(dto.getId(), dto.getNombre());
     }
 }

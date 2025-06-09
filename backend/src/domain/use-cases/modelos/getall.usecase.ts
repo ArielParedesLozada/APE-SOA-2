@@ -21,12 +21,12 @@ export class CargaModelos {
         const mapper = new ModeloMapper()
         this.repository = new EntityRepository<Modelo>(datasource, mapper)
     }
-    public cargaColores() : Promise<Modelo[]>{
+    public cargaModelos() : Promise<Modelo[]>{
         try {
             const result = this.repository.findAll()
             return result
         } catch (error) {
-            throw new CustomError(404, "Error al cargar los colores", error)            
+            throw new CustomError(404, "Error al cargar los modelos", error)            
         }
     }
 }

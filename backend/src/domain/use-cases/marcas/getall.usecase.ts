@@ -1,6 +1,5 @@
 import { DatasourceFactory } from "../../../infraestructure/datasource/datasource.factory";
 import { GlobalDatabase } from "../../../infraestructure/datasource/datasource.global";
-import { Color } from "../../entities/color.entity";
 import { EntityRepository } from "../../repository/repository.entity";
 import { CustomError } from "../../errors/error.entity";
 import { Marca } from "../../entities/marca.entity";
@@ -19,7 +18,7 @@ export class CargaMarcas {
         const mapper = new MarcaMapper()
         this.repository = new EntityRepository<Marca>(datasource, mapper)
     }
-    public cargaColores() : Promise<Marca[]>{
+    public cargaMarcas() : Promise<Marca[]>{
         try {
             const result = this.repository.findAll()
             return result
