@@ -12,4 +12,5 @@ public interface ModeloRepository {
      * @throws IOException fallo de red o parseo JSON
      */
     List<Modelo> findByMarcaId(int marcaId) throws IOException;
+    List<Modelo> findAll() throws IOException;
 }

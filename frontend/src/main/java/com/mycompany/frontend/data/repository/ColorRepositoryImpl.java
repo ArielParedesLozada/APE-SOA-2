@@ -21,7 +21,7 @@ public class ColorRepositoryImpl implements ColorRepository {
     @Override
     public List<Color> findAll() throws IOException {
         // Llamada GET a /waza según tu back
-        List<ColorDTO> dtos = api.getList("/waza", ColorDTO[].class);
+        List<ColorDTO> dtos = api.getList("/color", ColorDTO[].class);
         return dtos.stream()
                    .map(ColorMapper::fromDTO)
                    .collect(Collectors.toList());

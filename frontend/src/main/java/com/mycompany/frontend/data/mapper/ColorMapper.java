@@ -7,6 +7,6 @@ import com.mycompany.frontend.domain.entity.Color;
 public class ColorMapper {
     public static Color fromDTO(ColorDTO dto) {
         if (dto == null) return null;
-        return new Color(dto.getId(), dto.getName());
+        return new Color(dto.getId(), dto.getNombre());
     }
 }

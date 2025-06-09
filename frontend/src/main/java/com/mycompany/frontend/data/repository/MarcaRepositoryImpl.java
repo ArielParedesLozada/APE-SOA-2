@@ -17,7 +17,7 @@ public class MarcaRepositoryImpl implements MarcaRepository {
 
     @Override
     public List<Marca> findAll() throws IOException {
-        List<MarcaDTO> dtos = api.getList("/marcas", MarcaDTO[].class);
+        List<MarcaDTO> dtos = api.getList("/marca", MarcaDTO[].class);
         return dtos.stream().map(MarcaMapper::fromDTO).toList();
     }
 }

@@ -8,6 +8,6 @@ public class MarcaMapper {
     // ¡Este método debe existir y ser público y estático!
     public static Marca fromDTO(MarcaDTO dto) {
         if (dto == null) return null;
-        return new Marca(dto.getId(), dto.getName());
+        return new Marca(dto.getId(), dto.getNombre());
     }
 }
