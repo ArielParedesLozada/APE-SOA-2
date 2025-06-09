@@ -18,7 +18,7 @@ import com.mycompany.frontend.presentation.view.MainFrame;
 public class Frontend {
     public static void main(String[] args) {
         // 1) Configura tu cliente HTTP apuntando al backend
-        ApiService api = new ApiService("http://localhost:3100");
+        ApiService api = new ApiService("http://localhost:3000");
 
         // 2) Crea las implementaciones de repositorio
         var colorRepo   = new ColorRepositoryImpl(api);
