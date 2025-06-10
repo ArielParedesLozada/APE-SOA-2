@@ -13,6 +13,8 @@ import com.mycompany.frontend.domain.usecase.GetAllModelosUseCase;
 import com.mycompany.frontend.domain.usecase.GetAllVehiculosUseCase;
 import com.mycompany.frontend.domain.usecase.UpdateVehiculoUseCase;
 import com.mycompany.frontend.presentation.view.MainFrame;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -30,6 +32,10 @@ public class MainController {
     private final CreateVehiculoUseCase createVehiculo;
     private final UpdateVehiculoUseCase updateVehiculo;
     private final DeleteVehiculoUseCase deleteVehiculo;
+
+    // al inicio de la clase:
+    private int lastClickedRow = -1;
+    private Integer selectedId = null;
 
     // caches para mapear nombres a IDs
     private List<Marca> marcasCache = Collections.emptyList();
@@ -68,6 +74,29 @@ public class MainController {
         view.getTableVehiculos()
                 .getSelectionModel()
                 .addListSelectionListener(e -> onTableSelection());
+
+        view.getTableVehiculos().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JTable table = view.getTableVehiculos();
+                int clickedRow = table.rowAtPoint(e.getPoint());
+                // Si clicaste en el header o fuera de filas, ignoramos
+                if (clickedRow < 0) {
+                    return;
+                }
+
+                if (clickedRow == lastClickedRow) {
+                    // Segundo clic sobre la misma fila → deseleccionar
+                    table.clearSelection();
+                    clearForm();
+                    lastClickedRow = -1;
+                } else {
+                    // Primer clic sobre una fila distinta → dejamos que el ListSelectionListener la marque
+                    lastClickedRow = clickedRow;
+                }
+            }
+        });
+
     }
 
     private void loadCatalogs() {
@@ -82,10 +111,17 @@ public class MainController {
                 marcasCache = getAllMarcas.execute();
                 JComboBox<String> cb = view.getComboMarca();
                 cb.removeAllItems();
+                // 1) placeholder
+                cb.addItem("Seleccione");
+                // 2) luego las marcas reales
                 for (Marca m : marcasCache) {
                     cb.addItem(m.getNombre());
                 }
-                view.getComboModelo().removeAllItems();
+                // 3) dejar seleccionado el placeholder
+                cb.setSelectedIndex(0);
+
+                // al cambiar de marca, recargas modelos…
+                // view.getComboMarca().addActionListener(e -> onMarcaChanged());
             } catch (IOException ex) {
                 showError("Error al cargar marcas:\n" + ex.getMessage());
             }
@@ -112,9 +148,11 @@ public class MainController {
                 modelosCache = getAllModelos.execute();
                 JComboBox<String> cb = view.getComboModelo();
                 cb.removeAllItems();
+                cb.addItem("Seleccione");
                 for (Modelo m : modelosCache) {
                     cb.addItem(m.getNombre());
                 }
+                cb.setSelectedIndex(0);
             } catch (IOException ex) {
                 showError("Error al cargar modelos:\n" + ex.getMessage());
             }
@@ -127,9 +165,11 @@ public class MainController {
                 colorsCache = getAllColors.execute();
                 JComboBox<String> cb = view.getComboColor();
                 cb.removeAllItems();
+                cb.addItem("Seleccione");
                 for (Color c : colorsCache) {
                     cb.addItem(c.getNombre());
                 }
+                cb.setSelectedIndex(0);
             } catch (IOException ex) {
                 showError("Error al cargar colores:\n" + ex.getMessage());
             }
@@ -147,8 +187,8 @@ public class MainController {
                 for (Vehiculo v : items) {
                     model.addRow(new Object[]{
                         v.getId(),
-                        v.getMarca().getNombre(),
-                        v.getModelo().getNombre(),
+                        v.getModelo().getNombre(), // primero Modelo
+                        v.getMarca().getNombre(), // luego Marca
                         v.getPlaca(),
                         v.getChasis(),
                         v.getAnio(),
@@ -163,9 +203,6 @@ public class MainController {
 
     private void onSaveVehiculo() {
         try {
-            int id = view.getTxtId().isEnabled()
-                    ? Integer.parseInt(view.getTxtId().getText())
-                    : 0;
             String placa = view.getTxtPlaca().getText().trim();
             String chasis = view.getTxtChasis().getText().trim();
             int anio = Integer.parseInt(view.getTxtAnio().getText().trim());
@@ -174,39 +211,36 @@ public class MainController {
             String nomModelo = (String) view.getComboModelo().getSelectedItem();
             String nomColor = (String) view.getComboColor().getSelectedItem();
 
-            Marca marca = new Marca(
-                    marcasCache.stream()
-                            .filter(m -> m.getNombre().equals(nomMarca))
-                            .map(Marca::getId)
-                            .findFirst().orElse(0),
-                    nomMarca
-            );
-            Modelo modelo = new Modelo(
-                    modelosCache.stream()
-                            .filter(m -> m.getNombre().equals(nomModelo))
-                            .map(Modelo::getId)
-                            .findFirst().orElse(0),
-                    nomModelo
-            );
-            Color color = new Color(
-                    colorsCache.stream()
-                            .filter(c -> c.getNombre().equals(nomColor))
-                            .map(Color::getId)
-                            .findFirst().orElse(0),
-                    nomColor
+            Marca marca = marcasCache.stream()
+                    .filter(m -> m.getNombre().equals(nomMarca))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Marca no encontrada"));
+            Modelo modelo = modelosCache.stream()
+                    .filter(m -> m.getNombre().equals(nomModelo))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Modelo no encontrado"));
+            Color color = colorsCache.stream()
+                    .filter(c -> c.getNombre().equals(nomColor))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Color no encontrado"));
+
+            // Usa selectedId para decidir CREATE vs UPDATE
+            Vehiculo v = new Vehiculo(
+                    selectedId != null ? selectedId : 0,
+                    placa, chasis, anio,
+                    marca, modelo, color
             );
 
-            Vehiculo v = new Vehiculo(id, placa, chasis, anio, marca, modelo, color);
-
-            if (id == 0) {
+            if (selectedId == null) {
                 createVehiculo.execute(v);
             } else {
                 updateVehiculo.execute(v);
             }
+
             loadVehiculos();
             clearForm();
         } catch (NumberFormatException nfe) {
-            showError("ID o Año inválido");
+            showError("Año inválido");
         } catch (IOException ex) {
             showError("Error al guardar vehículo:\n" + ex.getMessage());
         }
@@ -231,42 +265,32 @@ public class MainController {
     private void onTableSelection() {
         int row = view.getTableVehiculos().getSelectedRow();
         if (row < 0) {
+            selectedId = null;
             return;
         }
-        view.getTxtId().setText(
-                view.getTableVehiculos().getValueAt(row, 0).toString()
-        );
-        view.getTxtId().setEnabled(true);
 
-        view.getComboMarca().setSelectedItem(
-                view.getTableVehiculos().getValueAt(row, 1).toString()
-        );
-        view.getComboModelo().setSelectedItem(
-                view.getTableVehiculos().getValueAt(row, 2).toString()
-        );
-        view.getTxtPlaca().setText(
-                view.getTableVehiculos().getValueAt(row, 3).toString()
-        );
-        view.getTxtChasis().setText(
-                view.getTableVehiculos().getValueAt(row, 4).toString()
-        );
-        view.getTxtAnio().setText(
-                view.getTableVehiculos().getValueAt(row, 5).toString()
-        );
-        view.getComboColor().setSelectedItem(
-                view.getTableVehiculos().getValueAt(row, 6).toString()
-        );
+        // 1) Guarda el ID de la fila seleccionada (columna 0)
+        selectedId = (Integer) view.getTableVehiculos().getValueAt(row, 0);
+
+        // 2) Rellena combos y campos
+        String modeloNombre = view.getTableVehiculos().getValueAt(row, 1).toString();
+        String marcaNombre = view.getTableVehiculos().getValueAt(row, 2).toString();
+        view.getComboModelo().setSelectedItem(modeloNombre);
+        view.getComboMarca().setSelectedItem(marcaNombre);
+        view.getTxtPlaca().setText(view.getTableVehiculos().getValueAt(row, 3).toString());
+        view.getTxtChasis().setText(view.getTableVehiculos().getValueAt(row, 4).toString());
+        view.getTxtAnio().setText(view.getTableVehiculos().getValueAt(row, 5).toString());
+        view.getComboColor().setSelectedItem(view.getTableVehiculos().getValueAt(row, 6).toString());
     }
 
     private void clearForm() {
-        view.getTxtId().setText("");
-        view.getTxtId().setEnabled(false);
+        selectedId = null;
         view.getTxtPlaca().setText("");
         view.getTxtChasis().setText("");
         view.getTxtAnio().setText("");
-        view.getComboMarca().setSelectedIndex(-1);
-        view.getComboModelo().removeAllItems();
-        view.getComboColor().setSelectedIndex(-1);
+        view.getComboMarca().setSelectedIndex(0);
+        view.getComboModelo().setSelectedIndex(0);
+        view.getComboColor().setSelectedIndex(0);
     }
 
     private void showError(String message) {
